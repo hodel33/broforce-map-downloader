@@ -23,18 +23,23 @@ I designed this Python application to automate the process of downloading and or
 
 If you are planning to use the standalone executable version of the application, follow these simple steps:
 
-1. **Download the Executable**:
-   Download the [.exe](https://github.com/hodel33/broforce-map-downloader/raw/main/broforce_map_downloader.exe), 
-   [config.ini](https://github.com/hodel33/broforce-map-downloader/raw/main/config.ini), and 
-   [readme.txt](https://github.com/hodel33/broforce-map-downloader/raw/main/readme.txt)
-    files from the repo. The config.ini and readme.txt files are necessary for running the application and understanding its usage.
-    > Please ensure to save the config file with the `.ini` extension if your browser suggests saving it as `.txt`.
+1. **Download the Package**:
+   Download the package from the following link: [broforce_map_downloader_1.0.0.zip](https://github.com/hodel33/broforce-map-downloader/releases/download/v1.0.0/broforce_map_downloader_1.0.0.zip). This ZIP file includes the `broforce_map_downloader.exe`, `config.ini`, and `readme.txt` necessary for running the application and understanding its usage.
 
-2. **Configure Settings**:
-   Edit the `config.ini` file to set your preferences for map types, difficulty levels and other parameters as described in the `readme.txt`.
+2. **Extract the Files**:
+   Once downloaded, extract the ZIP file to a convenient location on your computer.
 
-3. **Run the Application**:
-   Double-click on the executable file to start downloading maps according to your configured settings.
+3. **Configure Settings**:
+   Open the `config.ini` file with a text editor to set your preferences for map types, difficulty levels and other parameters as described in the `readme.txt`.
+
+4. **Run the Application**:
+   Double-click on the `broforce_map_downloader.exe` file to start downloading maps according to your configured settings.
+
+5. **Place Maps in the Broforce 'Levels' Folder**:
+   Move the downloaded maps to the 'Levels' folder in your Broforce game directory to play them in the game.
+
+5. **Place the Downloaded Maps in the Game's 'Levels' Folder**: 
+   After the maps have been downloaded, transfer the maps you wish to include to the 'Levels' folder within your Broforce game directory. This folder is where Broforce loads its maps, allowing you to play your new selected custom maps directly within the game.
 
 <br>
 
@@ -83,6 +88,9 @@ If you want to run the batch file or modify the Python code follow these detaile
      ```bash
      python broforce-maps-downloader.py
      ```
+
+6. **Place the Downloaded Maps in the Game's 'Levels' Folder**: 
+   After the maps have been downloaded, transfer the maps you wish to include to the 'Levels' folder within your Broforce game directory. This folder is where Broforce loads its maps, allowing you to play your new selected custom maps directly within the game.
 
 <br>
 
