@@ -28,6 +28,7 @@ If you are planning to use the standalone executable version of the application,
    [config.ini](https://github.com/hodel33/broforce-map-downloader/raw/main/config.ini), and 
    [readme.txt](https://github.com/hodel33/broforce-map-downloader/raw/main/readme.txt)
     files from the repo. The config.ini and readme.txt files are necessary for running the application and understanding its usage.
+    > Please ensure to save the config file with the `.ini` extension if your browser suggests saving it as `.txt`.
 
 2. **Configure Settings**:
    Edit the `config.ini` file to set your preferences for map types, difficulty levels and other parameters as described in the `readme.txt`.
