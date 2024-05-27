@@ -36,9 +36,6 @@ If you are planning to use the standalone executable version of the application,
    Double-click on the `broforce_map_downloader.exe` file to start downloading maps according to your configured settings.
 
 5. **Place Maps in the Broforce 'Levels' Folder**:
-   Move the downloaded maps to the 'Levels' folder in your Broforce game directory to play them in the game.
-
-5. **Place the Downloaded Maps in the Game's 'Levels' Folder**: 
    After the maps have been downloaded, transfer the maps you wish to include to the 'Levels' folder within your Broforce game directory. This folder is where Broforce loads its maps, allowing you to play your new selected custom maps directly within the game.
 
 <br>
