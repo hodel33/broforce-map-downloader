@@ -24,7 +24,10 @@ I designed this Python application to automate the process of downloading and or
 If you are planning to use the standalone executable version of the application, follow these simple steps:
 
 1. **Download the Executable**:
-   Download the `.exe`, `config.ini` and `readme.txt` files from the provided link. The config.ini and readme.txt files are necessary for running the application and understanding its usage.
+   Download the [.exe](https://github.com/hodel33/broforce-map-downloader/raw/main/broforce_map_downloader.exe), 
+   [config.ini](https://github.com/hodel33/broforce-map-downloader/raw/main/config.ini), and 
+   [readme.txt](https://github.com/hodel33/broforce-map-downloader/raw/main/readme.txt)
+    files from the repo. The config.ini and readme.txt files are necessary for running the application and understanding its usage.
 
 2. **Configure Settings**:
    Edit the `config.ini` file to set your preferences for map types, difficulty levels and other parameters as described in the `readme.txt`.
