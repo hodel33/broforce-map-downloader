@@ -27,6 +27,7 @@
  ~~~~~~~~~~~~~
  Maps are named in the format 'XYZ-123456789-Map Title.bfg', where:
  > 123456789 = Steam Workshop ID 
- > X = Gameplay Type (1-Standard, 2-Puzzle, 3-Story, etc.)
+ > X = Gameplay Type (1-Standard, 2-Puzzle, 3-Story, 4-Experimental, 
+   5-Challenge, 6-Deathmatch)
  > Y = Difficulty Level (1-Normal, 2-Challenging, 3-Brotal)
  > Z = Star Rating (0-5, 0 = not enough ratings)

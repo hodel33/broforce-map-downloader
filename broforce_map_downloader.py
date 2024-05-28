@@ -16,6 +16,8 @@ import re
 import os
 from pathlib import Path
 import configparser
+from collections import defaultdict
+import xml.etree.ElementTree as ET
 
 # Third-party libraries -> requirements.txt
 import requests
@@ -302,40 +304,6 @@ def get_existing_workshop_ids(directory):
                 existing_ids.append(parts[1])
     return existing_ids
 
-def organize_files_by_rating(directory):
-    """
-    Organize files into directories based on their rating.
-    """
-    # Create target directories if they do not exist
-    target_directories = {
-        '5': directory / '5 Stars',
-        '4': directory / '4 Stars',
-        '3-': directory / '3 Stars and less',
-        'bfd': directory / 'bfd'
-    }
-
-    for folder in target_directories.values():
-        folder.mkdir(exist_ok=True)
-
-    # Function to determine the appropriate folder based on star rating
-    def get_target_folder(file_name):
-
-        if file_name.endswith('.bfd'):
-            return target_directories['bfd']
-        
-        parts = file_name.split('-')
-        if len(parts) > 2 and parts[0]:
-            star_rating = parts[0][-1]  # Last character of the first part
-            return target_directories.get(star_rating, target_directories['3-'])
-        return None
-
-    # Move files into the appropriate folders
-    for file_path in directory.iterdir():
-        if file_path.is_file():
-            target_folder = get_target_folder(file_path.name)
-            if target_folder:
-                file_path.rename(target_folder / file_path.name)
-
 def _try_request(url, max_retries=4, delay=3, timeout=9):
     """
     Attempt an HTTP GET request with retries and exponential backoff.
@@ -397,6 +365,140 @@ def display_settings_info():
     if user_input == 'q':
         exit()
 
+def organize_files(directory):
+    """
+    Organize files into directories based on their rating and extension (bfg).
+    """
+    # Create target directories if they do not exist
+    target_directories = {
+        '5': directory / '5 Stars',
+        '4': directory / '4 Stars',
+        '3-': directory / '3 Stars and less',
+        'non-bfg': directory / 'non-bfg'
+    }
+
+    for folder in target_directories.values():
+        folder.mkdir(exist_ok=True)
+
+    # Function to determine the appropriate folder based on star rating
+    def get_target_folder(file_name):
+
+        # Put all maps which doesn't have .bfg as extension in a different folder
+        if not file_name.endswith('.bfg'):
+            return target_directories['non-bfg']
+        
+        parts = file_name.split('-')
+        if len(parts) > 2 and parts[0]:
+            star_rating = parts[0][-1]  # Last character of the first part
+            return target_directories.get(star_rating, target_directories['3-'])
+        return None
+
+    # Move files into the appropriate folders
+    for file_path in directory.iterdir():
+        if file_path.is_file():
+            target_folder = get_target_folder(file_path.name)
+            if target_folder:
+                file_path.rename(target_folder / file_path.name)
+
+def process_duplicates(directory, duplicate_maps):
+    """
+    Process duplicate files by moving duplicates to a specified folder and writing their details to a text file.
+    """
+    # Create the 'duplicates' directory if it doesn't already exist
+    duplicates_dir = directory / 'duplicates'
+    duplicates_dir.mkdir(exist_ok=True)
+
+    duplicates_info = []
+    for (map_name, author), files in duplicate_maps.items():
+        files_sorted = sorted(files, key=lambda x: int(x[0]), reverse=True)  # Sort by ID in descending order
+        main_file = files_sorted[0]
+
+        duplicates_info.append((map_name, author, 'Main', main_file[0], main_file[1]))
+        for file in files_sorted[1:]:
+            file_id, file_size, filepath = file  # Unpack file details
+            # Move duplicate files to the duplicates folder
+            file[2].rename(duplicates_dir / filepath.name)
+            duplicates_info.append((map_name, author, 'Dupl', file_id, file_size))
+
+    # Sort duplicates_info by map_name and then by author
+    duplicates_info.sort(key=lambda x: (x[0], x[1]))
+
+    # Write duplicates info to @duplicates.txt
+    duplicates_txt_path = duplicates_dir / '@duplicates.txt'
+    with open(duplicates_txt_path, 'w', encoding='utf-8') as f:
+        current_map_name = None
+        current_author = None
+        for map_name, author, status, map_id, size in duplicates_info:
+            if map_name != current_map_name or author != current_author:
+                if current_map_name is not None:
+                    f.write("\n")
+                current_map_name = map_name
+                current_author = author
+                f.write(f"'{map_name}' by {author}\n")
+            f.write(f"{status} - ID {map_id} - Size (B) {size}\n")
+
+
+def list_duplicate_maps(directory):
+    """
+    Scans for .bfg files in a directory and identifies duplicates by name and size, returning a dictionary with map names and file sizes.
+    """
+    map_details = defaultdict(list)
+    duplicates = {}
+
+    # Use rglob to recursively search for all files
+    for filepath in directory.rglob('*.bfg'):  # This ensures only .bfg files are considered
+        filename = filepath.stem  # Get the filename without the extension
+        parts = filename.split('-')
+        if len(parts) > 2:
+            map_id = parts[1]  # Assuming the ID is always the second part
+            map_name = '-'.join(parts[2:])  # Combine everything after the second dash
+            file_size = filepath.stat().st_size  # Get file size in bytes
+            
+            # Extract author info from the file
+            file_info = extract_info_from_bfg(filepath)
+            author = file_info.get('author', '<unknown>')  # Use '<unknown>' if author not found
+            
+            map_details[(map_name, author)].append((map_id, file_size, filepath))
+
+    # Identify duplicates and collect their IDs
+    for (map_name, author), ids in map_details.items():
+        if len(ids) > 1:
+            duplicates[(map_name, author)] = ids
+
+    return duplicates
+
+def extract_info_from_bfg(file_path):
+    """
+    Extracts information from a .bfg map file.
+    """
+    start_tag = b'<?xml'
+    end_tag = b'</CampaignHeader>'
+    chunk_size = 1024  # Adjust as needed to ensure the entire XML is captured
+
+    with open(file_path, 'rb') as file:
+        content = file.read(chunk_size)
+    
+    xml_start_index = content.find(start_tag)
+    xml_end_index = content.find(end_tag) + len(end_tag)
+    
+    if xml_start_index == -1 or xml_end_index == -1:
+        # raise ValueError(f"Invalid .bfg file format: XML header not found in file {file_path}")
+        return {}  # Return empty info if XML header not found
+
+    xml_content = content[xml_start_index:xml_end_index].decode('utf-8', errors='ignore')
+
+    # Parse the XML content
+    try:
+        root = ET.fromstring(xml_content)
+    except ET.ParseError as e:
+        # raise ValueError(f"XML parsing error in file {file_path}: {e}")
+        return {}  # Return empty info if XML parsing fails
+
+    tags = ['name', 'author', 'description', 'length', 'md5', 'hasBrotalityScoreboard', 'hasTimeScoreBoard', 'gameMode']
+    info = {tag: (root.find(tag).text if root.find(tag) is not None else '') for tag in tags}
+
+    return info
+
 if __name__ == '__main__':
 
     print_main_header()
@@ -420,7 +522,15 @@ if __name__ == '__main__':
         exit()
 
     successfully_downloaded_maps = download_all_maps(all_map_urls)
-    organize_files_by_rating(maps_directory)
+
+    # Organize files into directories based on their rating and extension (bfg)
+    organize_files(maps_directory)
+
+    # Get duplicate maps info
+    duplicate_maps = list_duplicate_maps(maps_directory)
+
+    # Process duplicate maps
+    process_duplicates(maps_directory, duplicate_maps)
 
     print(f"\n")
     print(f"************      DOWNLOAD COMPLETE      ************")

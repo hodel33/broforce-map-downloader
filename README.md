@@ -13,6 +13,7 @@ I designed this Python application to automate the process of downloading and or
 - **Folder Organization**: Organizes downloaded maps into directories based on their rating.
 - **File Organization**: Each file is named with the gameplay type, difficulty and star rating for easy identification of map characteristics.
 - **Configurable Settings**: Customizable settings through a configuration file (`config.ini`).
+- **Duplicate Handling**: Detects and manages duplicate maps, ensuring that only unique maps are organized.
 - **Error Handling**: Robust error-handling mechanisms including retries and exponential backoff for HTTP requests.
 
 <br>
@@ -121,11 +122,19 @@ Upon launching the application, the main menu displays the current settings from
 
 <br>
 
-- **Organizing Maps**: After all maps have been downloaded, they are automatically sorted into subdirectories for easier access, organized based on their star rating. Additionally, each map file is systematically named to reflect its gameplay type, difficulty and star rating, allowing for quick identification of the map's characteristics.
+- **Organizing Maps**: After all maps have been downloaded, they are automatically sorted into subdirectories for easier access, organized based on their star rating. Additionally, each map file is systematically named to reflect its gameplay type, difficulty and star rating, allowing for quick identification of the map's characteristics. Maps with non-bfg extensions are moved to a separate 'non-bfg' folder.
 
 <br>
 
 ![Screenshot 4](readme_screens/bmd_screen_4.png)
+
+<br>
+
+- **Handling Duplicates**: Lastly, the app incorporates a feature to detect and manage duplicate maps. If duplicate maps are encountered, they are intelligently handled by moving them to a designated 'duplicates' folder and a `@duplicates.txt` file is generated inside the same folder, containing details like map name, ID, author, and file size. This ensures that only unique maps are organized, avoiding unnecessary duplicates.
+
+<br>
+
+![Screenshot 5](readme_screens/bmd_screen_5.png)
 
 <br>
 
