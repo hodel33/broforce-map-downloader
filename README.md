@@ -25,7 +25,7 @@ I designed this Python application to automate the process of downloading and or
 If you are planning to use the standalone executable version of the application, follow these simple steps:
 
 1. **Download the Package**:
-   Download the package from the following link: [broforce_map_downloader_1.0.0.zip](https://github.com/hodel33/broforce-map-downloader/releases/download/v1.0.0/broforce_map_downloader_1.0.0.zip). This ZIP file includes the `broforce_map_downloader.exe`, `config.ini`, and `readme.txt` necessary for running the application and understanding its usage.
+   Download the package from the following link: [broforce_map_downloader_1.1.zip](https://github.com/hodel33/broforce-map-downloader/releases/download/v1.1/broforce_map_downloader_1.1.zip). This ZIP file includes the `broforce_map_downloader.exe`, `config.ini`, and `readme.txt` necessary for running the application and understanding its usage.
 
 2. **Extract the Files**:
    Once downloaded, extract the ZIP file to a convenient location on your computer.
